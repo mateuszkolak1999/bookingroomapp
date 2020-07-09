@@ -1,12 +1,14 @@
 package pl.kolak.bookhotelroom.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.kolak.bookhotelroom.exceptions.BookingDoNotCreatedException;
 import pl.kolak.bookhotelroom.exceptions.BookingDoNotUpdateException;
+import pl.kolak.bookhotelroom.exceptions.RoomIsNotAvailableException;
 import pl.kolak.bookhotelroom.models.Booking;
 import pl.kolak.bookhotelroom.services.BookingService;
 
@@ -67,5 +69,11 @@ public class BookingController {
             bookingService.modify(id,booking);
         }else
             throw new BookingDoNotUpdateException();
+    }
+
+    @ExceptionHandler(RoomIsNotAvailableException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error userNotFound(RoomIsNotAvailableException e){
+        return new Error("Booking canceled. Room is not available.");
     }
 }

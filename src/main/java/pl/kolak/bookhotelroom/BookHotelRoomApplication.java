@@ -3,6 +3,7 @@ package pl.kolak.bookhotelroom;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.kolak.bookhotelroom.models.Equipment;
 import pl.kolak.bookhotelroom.models.Room;
 import pl.kolak.bookhotelroom.repositories.EquipmentRepository;
@@ -12,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 
 @SpringBootApplication
+@EnableScheduling
 public class BookHotelRoomApplication {
 
     public static void main(String[] args) {

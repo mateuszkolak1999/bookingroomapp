@@ -23,6 +23,8 @@ public class Room implements Serializable {
     private int people;
     private boolean available;
     private float costPerDay;
+    @Column(name = "left_day")
+    private int leftDay;
     @ManyToMany
     @JoinTable(name = "room_equipment",
         joinColumns = {@JoinColumn(name = "room_id", referencedColumnName = "room_id")},
@@ -57,7 +59,7 @@ public class Room implements Serializable {
         this.people = people;
     }
 
-    public boolean isAvailable() {
+    public boolean getAvailable() {
         return available;
     }
 
@@ -71,6 +73,14 @@ public class Room implements Serializable {
 
     public void setCostPerDay(float costPerDay) {
         this.costPerDay = costPerDay;
+    }
+
+    public int getLeftDay() {
+        return leftDay;
+    }
+
+    public void setLeftDay(int leftDay) {
+        this.leftDay = leftDay;
     }
 
     public List<Equipment> getEquipment() {
@@ -98,13 +108,14 @@ public class Room implements Serializable {
                 people == room.people &&
                 available == room.available &&
                 Float.compare(room.costPerDay, costPerDay) == 0 &&
+                leftDay == room.leftDay &&
                 Objects.equals(equipment, room.equipment) &&
                 Objects.equals(bookingList, room.bookingList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, people, available, costPerDay, equipment, bookingList);
+        return Objects.hash(id, people, available, costPerDay, leftDay, equipment, bookingList);
     }
 
     @Override
@@ -114,6 +125,7 @@ public class Room implements Serializable {
                 ", people=" + people +
                 ", available=" + available +
                 ", costPerDay=" + costPerDay +
+                ", leftDay=" + leftDay +
                 ", equipment=" + equipment +
                 ", bookingList=" + bookingList +
                 '}';

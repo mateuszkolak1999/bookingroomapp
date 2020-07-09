@@ -1,8 +1,10 @@
 package pl.kolak.bookhotelroom.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,10 +17,10 @@ public class Booking implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
     private long id;
-    @NotEmpty
-    private String booking_from;
-    @NotEmpty
-    private String booking_to;
+    @Future
+    private LocalDate booking_from;
+    @Future
+    private LocalDate booking_to;
     private float cost;
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -32,7 +34,7 @@ public class Booking implements Serializable {
     public Booking() {
     }
 
-    public Booking(String booking_from, String booking_to, float cost, Customer customer) {
+    public Booking(LocalDate booking_from, LocalDate booking_to, float cost, Customer customer) {
         this.booking_from = booking_from;
         this.booking_to = booking_to;
         this.cost = cost;
@@ -47,19 +49,19 @@ public class Booking implements Serializable {
         this.id = id;
     }
 
-    public void setBooking_from(String booking_from) {
+    public void setBooking_from(LocalDate booking_from) {
         this.booking_from = booking_from;
     }
 
-    public String getBooking_form() {
+    public LocalDate getBooking_from() {
         return booking_from;
     }
 
-    public String getBooking_to() {
+    public LocalDate getBooking_to() {
         return booking_to;
     }
 
-    public void setBooking_to(String booking_to) {
+    public void setBooking_to(LocalDate booking_to) {
         this.booking_to = booking_to;
     }
 

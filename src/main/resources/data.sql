@@ -16,11 +16,17 @@ VALUES ("aa@aa.pl","test123","test123",1,1);
 INSERT INTO equipment(name, count)
 VALUES ("Krzesła", 2);
 
-INSERT INTO room(available,cost_per_day,left_day, people)
-VALUES (1,100,0,2);
+INSERT INTO room(available,cost_per_day,people)
+VALUES (1,100,2);
+
+INSERT INTO room(available,cost_per_day,people)
+VALUES (1,200,3);
 
 INSERT INTO room_equipment(room_id,equipment_id)
 VALUES (1,1);
+
+INSERT INTO room_equipment(room_id,equipment_id)
+VALUES (2,1);
 
 INSERT INTO booking(booking_from, booking_to, cost, customer_id)
 VALUES ('2020-08-01','2020-08-10',100,1);

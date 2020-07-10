@@ -12,7 +12,9 @@ import pl.kolak.bookhotelroom.services.RoomService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -38,6 +40,11 @@ public class RoomController {
     @GetMapping("/room/{id}")
     public Room getRoomById(@PathVariable(name = "id")Long id){
         return roomService.roomById(id);
+    }
+
+    @GetMapping("/room/{id}/date")
+    public List<Map<String, LocalDate>> dateAvailableRoom(@PathVariable(name = "id")Long id){
+        return roomService.dateAvailableRoom(id);
     }
 
     @PostMapping("/room/add")

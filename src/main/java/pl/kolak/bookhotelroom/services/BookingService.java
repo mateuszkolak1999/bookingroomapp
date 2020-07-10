@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,21 +58,20 @@ public class BookingService {
         float cost=0;
         LocalDate booking_from = booking.getBooking_from();
         LocalDate booking_to = booking.getBooking_to();
-        int days = (int)ChronoUnit.DAYS.between(booking_from, booking_to);
         List<Room> rooms = booking.getRooms();
-        for (Room r:rooms) {
-            long roomId = r.getId();
-            Room room = roomRepository.findById(roomId).get();
-            if(room.getAvailable()){
+        int days = (int)ChronoUnit.DAYS.between(booking_from, booking_to);
+
+        if(checkAvailableRoom(booking)){
+            for (Room r:rooms) {
+                long roomId = r.getId();
+                Room room = roomRepository.findById(roomId).get();
                 float costPerDay = room.getCostPerDay();
                 cost+=costPerDay*days;
-                room.setLeftDay(days);
-                room.setAvailable(false);
-                roomRepository.save(room);
-            }else{
-                throw new RoomIsNotAvailableException();
             }
+        }else{
+            throw new RoomIsNotAvailableException();
         }
+
         booking.setCost(cost);
         bookingRepository.save(booking);
     }
@@ -87,5 +87,42 @@ public class BookingService {
     public void modify(Long id,Booking booking){
         booking.setId(id);
         bookingRepository.save(booking);
+    }
+
+    private boolean checkAvailableRoom(Booking booking){
+        LocalDate booking_from = booking.getBooking_from();
+        LocalDate booking_to = booking.getBooking_to();
+
+        List<Room> rooms = booking.getRooms();
+        ArrayList<Long> roomsId = rooms.stream()
+                .map(Room::getId)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        List<Booking> bookingList = bookingRepository.findAll();
+        bookingList.sort(Comparator.comparing(Booking::getBooking_from));
+
+        List <Booking> filterRoomList = new ArrayList<>();
+        for(Booking b:bookingList){
+            List<Room> roomList = b.getRooms();
+            for(Room r:roomList){
+                if(roomsId.contains(r.getId()))
+                    filterRoomList.add(b);
+            }
+        }
+
+        for(Booking b:filterRoomList){
+            LocalDate bookedFrom = b.getBooking_from();
+            LocalDate bookedTo = b.getBooking_to();
+
+            if((booking_from.isAfter(bookedFrom) && booking_from.isBefore(bookedTo))
+            || (booking_to.isAfter(bookedFrom) && booking_to.isBefore(bookedTo))
+            || (bookedFrom.isAfter(booking_from) && bookedFrom.isBefore(booking_to))
+            || (bookedTo.isAfter(booking_from) && bookedTo.isBefore(booking_to))
+            || (bookedFrom.equals(booking_from))
+            || (bookedTo.equals(booking_to))){
+                return false;
+            }
+        }
+        return true;
     }
 }
